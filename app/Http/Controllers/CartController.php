@@ -18,7 +18,12 @@ class CartController extends BaseController
         $this->user_id = 0;
         $access_token = $request->header('Authorization');
         if(isset($access_token) && !empty($access_token)){
-            $this->user_id = auth()->guard('api')->user()->id;            
+            if(isset(auth()->guard('api')->user()->id) && !empty(auth()->guard('api')->user()->id)){
+                $this->user_id = auth()->guard('api')->user()->id ?? 0;            
+            }else{
+                return $this->sendError('Your token is expired.');
+                exit;
+            }
         }
     }
     /**
